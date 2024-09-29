@@ -63,30 +63,13 @@ void tspBruteForce(int graph[][100], int n, int *min_cost) {
 }
 
 
-void saveExecutionTime(int n, double exec_time) {
-    FILE *fptr;
-    fptr = fopen("tsp_execution_times.csv", "a");
-    if (fptr == NULL) {
-        printf("Error opening file!");
-        exit(1);
-    }
-    fprintf(fptr, "%d,%f\n", n, exec_time);
-    fclose(fptr);
-}
-
 int main() {
     int min_cost, n=4;
-    srand(time(NULL));
     int graph[100][100] = { { 0, 10, 15, 20 },
                        { 10, 0, 35, 25 },
                        { 15, 35, 0, 30 },
                        { 20, 25, 30, 0 } };
-
-    clock_t start = clock();
     tspBruteForce(graph, n, &min_cost);
     printf("Minimum Cost = %d\n",min_cost);
-    clock_t end = clock();
-    double exec_time = (double)(end - start) / CLOCKS_PER_SEC;
-    //printf("Nodes: %d, Execution Time: %f seconds, Min Cost: %d\n", n, exec_time, min_cost);
     return 0;
 }
