@@ -12,7 +12,7 @@ int min(int a, int b) {
     return (a < b) ? a : b;
 }
 
-
+//can collapse nested for loops using collapse(2)
 void generateGraph(int n) {
     for (int i = 1; i <= n; i++) {
         for (int j = 1; j <= n; j++) {
@@ -43,7 +43,7 @@ int fun(int i, int mask, int n, int **memo) {
 
     if (memo[i][mask] != 0) 
         return memo[i][mask];
-
+    //each recusive call can be parallized by sharing tasks ( eg. taskgroup )
     int res = MAX;
     for (int j = 1; j <= n; j++) {
         if ((mask & (1 << j)) && j != i && j != 1) {
@@ -61,7 +61,7 @@ int main() {
 
     for (int n = 4; n <= MAX_V; n++) {
         generateGraph(n);
-
+        //can paralllize the task of initializing dp array
         int **memo = (int **)malloc((n + 1) * sizeof(int *));
         for (int i = 0; i <= n; i++) {
             memo[i] = (int *)malloc((1 << (n + 1)) * sizeof(int));
