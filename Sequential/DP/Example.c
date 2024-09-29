@@ -68,7 +68,7 @@ int main() {
     clock_t end = clock();
     double exec_time = (double)(end - start) / CLOCKS_PER_SEC;
 
-    printf("Nodes: %d, Execution Time: %f seconds, Min Cost: %d\n", n, exec_time, ans);
+    printf("Minimum Cost = %d\n",ans);
     saveExecutionTime(n, exec_time);
 
     for (int i = 0; i <= n; i++) {

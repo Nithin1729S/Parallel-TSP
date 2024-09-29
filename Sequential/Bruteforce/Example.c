@@ -84,9 +84,9 @@ int main() {
 
     clock_t start = clock();
     tspBruteForce(graph, n, &min_cost);
-    printf("%d",min_cost);
+    printf("Minimum Cost = %d\n",min_cost);
     clock_t end = clock();
     double exec_time = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Nodes: %d, Execution Time: %f seconds, Min Cost: %d\n", n, exec_time, min_cost);
+    //printf("Nodes: %d, Execution Time: %f seconds, Min Cost: %d\n", n, exec_time, min_cost);
     return 0;
 }
