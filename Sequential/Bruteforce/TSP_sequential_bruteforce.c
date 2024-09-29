@@ -1,3 +1,5 @@
+//Time Complexity: O(N!)
+//Space Complexity: O(N^2)
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -88,7 +90,7 @@ void tspBruteForce(int graph[][V], int n, int *min_cost) {
 
 void saveExecutionTime(int n, double exec_time) {
     FILE *fptr;
-    fptr = fopen("tsp_execution_times.csv", "a");
+    fptr = fopen("tsp_bruteforce_execution_times.csv", "a");
     if (fptr == NULL) {
         printf("Error opening file!");
         exit(1);
@@ -104,12 +106,12 @@ int main() {
     int min_cost, n;
     srand(time(NULL));
 
-    FILE *fptr = fopen("tsp_execution_times.csv", "w");
+    FILE *fptr = fopen("tsp_bruteforce_execution_times.csv", "w");
     fprintf(fptr, "Nodes,Execution_Time\n");
     fclose(fptr);
 
-    for (n = 3; n <= 12; n++) { 
-        generateGraph(graph, n); //generate graph of n nodes with random weights assigned to it
+    for (n = 3; n <= 19; n++) { 
+        generateGraph(graph, n);
 
         
         clock_t start = clock();
