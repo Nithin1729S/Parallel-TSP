@@ -17,7 +17,7 @@ plt.plot(data_dp['Nodes'], data_dp['Execution_Time'], marker='o', label='DP (Hel
 
 plt.xlabel('Number of Nodes')
 plt.ylabel('Execution Time (seconds)')
-plt.title('TSP Execution Times: Brute Force vs Dynamic Programming')
+plt.title('TSP Sequential Execution Times: Brute Force vs Dynamic Programming')
 plt.grid(True)
 plt.legend()
 

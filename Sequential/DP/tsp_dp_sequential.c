@@ -1,22 +1,18 @@
-//Time Complexity: O(N^2 * 2^N )
-//Space Complexity: O(N * 2^N)
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
 
-#define MAX_V 19 
+#define MAX_V 25
 #define MAX 1000000
 
 int dist[MAX_V + 1][MAX_V + 1];
-int memo[MAX_V + 1][1 << (MAX_V + 1)];
 
 int min(int a, int b) {
     return (a < b) ? a : b;
 }
 
-//Nested loop can be collapsed using collapse(2)
+
 void generateGraph(int n) {
     for (int i = 1; i <= n; i++) {
         for (int j = 1; j <= n; j++) {
@@ -40,48 +36,55 @@ void saveExecutionTime(int n, double exec_time) {
     fclose(fptr);
 }
 
-//can parallize this using tasks
-int fun(int i, int mask, int n)
-{
-    if (mask == ((1 << i) | 3))
+// Dynamic Programming function for TSP
+int fun(int i, int mask, int n, int **memo) {
+    if (mask == ((1 << i) | 3)) 
         return dist[1][i];
-    if (memo[i][mask] != 0)
+
+    if (memo[i][mask] != 0) 
         return memo[i][mask];
+
     int res = MAX;
-    for (int j = 1; j <= n; j++)
-        if ((mask & (1 << j)) && j != i && j != 1)
-            res = min(res, fun(j, mask & (~(1 << i)), n) + dist[j][i]);
+    for (int j = 1; j <= n; j++) {
+        if ((mask & (1 << j)) && j != i && j != 1) {
+            res = min(res, fun(j, mask & (~(1 << i)), n, memo) + dist[j][i]);
+        }
+    }
     return memo[i][mask] = res;
 }
 
-int main()
-{
+int main() {
     srand(time(NULL)); 
     FILE *fptr = fopen("tsp_dp_execution_times.csv", "w");
     fprintf(fptr, "Nodes,Execution_Time\n");
     fclose(fptr);
+
     for (int n = 4; n <= MAX_V; n++) {
         generateGraph(n);
-        //can use parrallel for region for this loop
+
+        int **memo = (int **)malloc((n + 1) * sizeof(int *));
         for (int i = 0; i <= n; i++) {
+            memo[i] = (int *)malloc((1 << (n + 1)) * sizeof(int));
             for (int j = 0; j < (1 << (n + 1)); j++) {
-                memo[i][j] = 0;
+                memo[i][j] = 0;  
             }
         }
 
         clock_t start = clock();
-
-        //can use parallel reduction clause here 
         int ans = MAX;
-        for (int i = 1; i <= n; i++)
-            ans = min(ans, fun(i, (1 << (n + 1)) - 1, n) + dist[i][1]);
-
+        for (int i = 1; i <= n; i++) {
+            ans = min(ans, fun(i, (1 << (n + 1)) - 1, n, memo) + dist[i][1]);
+        }
         clock_t end = clock();
         double exec_time = (double)(end - start) / CLOCKS_PER_SEC;
-    
-        printf("Nodes: %d, Execution Time: %f seconds, Min Cost: %d\n", n, exec_time, ans);
 
+        printf("Nodes: %d, Execution Time: %f seconds, Min Cost: %d\n", n, exec_time, ans);
         saveExecutionTime(n, exec_time);
+
+        for (int i = 0; i <= n; i++) {
+            free(memo[i]);
+        }
+        free(memo);
     }
 
     return 0;
