@@ -21,16 +21,6 @@ int min(int a, int b) {
     return (a < b) ? a : b;
 }
 
-void saveExecutionTime(int n, double exec_time) {
-    FILE *fptr;
-    fptr = fopen("tsp_dp_execution_times.csv", "a");
-    if (fptr == NULL) {
-        printf("Error opening file!");
-        exit(1);
-    }
-    fprintf(fptr, "%d,%f\n", n, exec_time);
-    fclose(fptr);
-}
 
 // Dynamic Programming function for TSP
 int fun(int i, int mask, int n, int **memo) {
@@ -50,9 +40,6 @@ int fun(int i, int mask, int n, int **memo) {
 }
 
 int main() {
-    FILE *fptr = fopen("tsp_dp_execution_times.csv", "w");
-    fprintf(fptr, "Nodes,Execution_Time\n");
-    fclose(fptr);
 
     int n = 4; 
     int **memo = (int **)malloc((n + 1) * sizeof(int *));
@@ -63,16 +50,12 @@ int main() {
         }
     }
 
-    clock_t start = clock();
     int ans = MAX;
     for (int i = 1; i <= n; i++) {
         ans = min(ans, fun(i, (1 << (n + 1)) - 1, n, memo) + dist[i][1]);
     }
-    clock_t end = clock();
-    double exec_time = (double)(end - start) / CLOCKS_PER_SEC;
-
+    
     printf("Minimum Cost = %d\n",ans);
-    saveExecutionTime(n, exec_time);
 
     for (int i = 0; i <= n; i++) {
         free(memo[i]);
