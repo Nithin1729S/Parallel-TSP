@@ -12,7 +12,6 @@ int min(int a, int b) {
     return (a < b) ? a : b;
 }
 
-
 void generateGraph(int n) {
     for (int i = 1; i <= n; i++) {
         for (int j = 1; j <= n; j++) {

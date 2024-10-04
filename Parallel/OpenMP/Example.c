@@ -33,21 +33,34 @@ void saveExecutionTime(int n, double exec_time) {
 }
 
 // Dynamic Programming function for TSP
-int fun(int i, int mask, int n, int **memo) {
+int fun(int i, int mask, int n, int **memo) 
+{
     if (mask == ((1 << i) | 3)) 
         return dist[1][i];
-
+            
     if (memo[i][mask] != 0) 
         return memo[i][mask];
-
+    
     int res = MAX;
+
+    #pragma omp parallel for reduction(min:res) schedule(dynamic)
     for (int j = 1; j <= n; j++) {
-        if ((mask & (1 << j)) && j != i && j != 1) {
-            res = min(res, fun(j, mask & (~(1 << i)), n, memo) + dist[j][i]);
+        if ((mask & (1 << j)) && j != i && j != 1) 
+        {
+            int newMask = mask & (~(1 << i));
+            int result = fun(j, newMask, n, memo);
+            res = min(res, result + dist[j][i]);
         }
     }
-    return memo[i][mask] = res;
+        
+    #pragma omp critical
+    {
+        memo[i][mask] = res;
+    }
+
+    return res;
 }
+
 
 int main() {
     FILE *fptr = fopen("tsp_dp_execution_times.csv", "w");
@@ -65,9 +78,16 @@ int main() {
 
     clock_t start = clock();
     int ans = MAX;
-    for (int i = 1; i <= n; i++) {
-        ans = min(ans, fun(i, (1 << (n + 1)) - 1, n, memo) + dist[i][1]);
+
+    #pragma omp parallel for reduction(min:ans) schedule(dynamic)
+    for (int i = 1; i <= n; i++) 
+    {
+        int mask = (1 << (n + 1)) - 1;
+        int result = fun(i, mask, n, memo);
+        int total = result + dist[i][1];
+        ans = min(ans, total);
     }
+
     clock_t end = clock();
     double exec_time = (double)(end - start) / CLOCKS_PER_SEC;
 
