@@ -54,6 +54,7 @@ void saveExecutionTime(int n, int threads, double exec_time, const char* schedul
     fclose(fptr);
 }
 
+
 int fun(int i, int mask, int n, int **memo, const char* schedule_type) 
 {
     if (mask == ((1 << i) | 3))
@@ -84,6 +85,15 @@ int fun(int i, int mask, int n, int **memo, const char* schedule_type)
         }
     } else if (strcmp(schedule_type, "guided") == 0) {
         #pragma omp parallel for reduction(min:res) schedule(guided)
+        for (int j = 1; j <= n; j++) {
+            if ((mask & (1 << j)) && j != i && j != 1) {
+                int newMask = mask & (~(1 << i));
+                int result = fun(j, newMask, n, memo, schedule_type);
+                res = min(res, result + dist[j][i]);
+            }
+        }
+    } else if (strcmp(schedule_type, "runtime") == 0) {
+        #pragma omp parallel for reduction(min:res) schedule(runtime)
         for (int j = 1; j <= n; j++) {
             if ((mask & (1 << j)) && j != i && j != 1) {
                 int newMask = mask & (~(1 << i));
