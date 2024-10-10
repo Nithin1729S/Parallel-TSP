@@ -1,66 +1,58 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <time.h>
 
-#define MAX_V 40 
-#define MAX 1000000
+#define MAX 20 
+#define INF INT_MAX
 
-int dist[MAX_V + 1][MAX_V + 1] = {
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 10, 20, 30, 40, 50},
-    {0, 10, 0, 15, 25, 35, 45},
-    {0, 20, 15, 0, 22, 30, 40},
-    {0, 30, 25, 22, 0, 18, 28},
-    {0, 40, 35, 30, 18, 0, 12},
-    {0, 50, 45, 40, 28, 12, 0},
-};
+int graph[MAX][MAX]; 
+int dp[1 << MAX][MAX]; 
 
+int tspDP(int mask, int pos, int n) {
 
-int min(int a, int b) {
-    return (a < b) ? a : b;
-}
+    if (mask == (1 << n) - 1) {
+        return graph[pos][0]; 
+    }
 
+    if (dp[mask][pos] != -1) {
+        return dp[mask][pos];
+    }
 
-// Dynamic Programming function for TSP
-int fun(int i, int mask, int n, int **memo) {
-    if (mask == ((1 << i) | 3)) 
-        return dist[1][i];
+    int min_cost = INF; 
 
-    if (memo[i][mask] != 0) 
-        return memo[i][mask];
-
-    int res = MAX;
-    for (int j = 1; j <= n; j++) {
-        if ((mask & (1 << j)) && j != i && j != 1) {
-            res = min(res, fun(j, mask & (~(1 << i)), n, memo) + dist[j][i]);
+    for (int city = 0; city < n; city++) {
+        if ((mask & (1 << city)) == 0) {
+            int new_cost = graph[pos][city] + tspDP(mask | (1 << city), city, n);
+            min_cost = (new_cost < min_cost) ? new_cost : min_cost; 
         }
     }
-    return memo[i][mask] = res;
+
+    return dp[mask][pos] = min_cost;
 }
 
 int main() {
-
     int n = 4; 
-    int **memo = (int **)malloc((n + 1) * sizeof(int *));
-    for (int i = 0; i <= n; i++) {
-        memo[i] = (int *)malloc((1 << (n + 1)) * sizeof(int));
-        for (int j = 0; j < (1 << (n + 1)); j++) {
-            memo[i][j] = 0;  
+    int min_cost;
+
+    int example_graph[4][4] = { { 0, 10, 15, 20 },
+                                  { 10, 0, 35, 25 },
+                                  { 15, 35, 0, 30 },
+                                  { 20, 25, 30, 0 } };
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            graph[i][j] = example_graph[i][j];
         }
     }
 
-    int ans = MAX;
-    for (int i = 1; i <= n; i++) {
-        ans = min(ans, fun(i, (1 << (n + 1)) - 1, n, memo) + dist[i][1]);
+    for (int i = 0; i < (1 << n); i++) {
+        for (int j = 0; j < n; j++) {
+            dp[i][j] = -1;
+        }
     }
-    
-    printf("Minimum Cost = %d\n",ans);
 
-    for (int i = 0; i <= n; i++) {
-        free(memo[i]);
-    }
-    free(memo);
+    min_cost = tspDP(1, 0, n);
+    printf("Minimum Cost = %d\n", min_cost);
 
     return 0;
 }
