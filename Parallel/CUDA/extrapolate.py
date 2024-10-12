@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Existing data for nodes and corresponding execution times and shortest paths
-nodes = np.array([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17])
-execution_times = np.array([8e-06, 1.4e-05, 3.1e-05, 8e-05, 0.000203, 0.000424, 0.000959, 0.002202, 0.004654, 0.008088, 0.021587, 0.073654, 0.181658, 0.583788, 1.531165, 3.549083, 7.900504])
+nodes = np.array([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,18,19,20,21,22,23,24,25,26,27])
+execution_times = np.array( [3.9e-05, 2.1e-05, 2e-05, 2.3e-05, 2.2e-05, 4.3e-05, 4.6e-05, 0.000162, 0.001543, 0.018341, 0.22536, 0.403661, 0.539362, 0.661198, 0.70394, 1.40788, 2.81576, 5.63152, 11.26304, 22.52608, 45.05216, 90.10432, 180.20864, 360.41728, 720.83456])
 
 # Function to extrapolate execution times and shortest paths
 def extrapolate_tsp(nodes, execution_times, new_nodes):
@@ -24,7 +24,7 @@ def extrapolate_tsp(nodes, execution_times, new_nodes):
     return estimated_times
 
 # Nodes to extrapolate
-new_nodes = np.arange(18, 31)
+new_nodes = np.arange(28, 31)
 
 # Extrapolate
 estimated_times = extrapolate_tsp(nodes,execution_times, new_nodes)
