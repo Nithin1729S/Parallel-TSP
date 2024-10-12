@@ -4,7 +4,7 @@
 #include <curand_kernel.h>
 #include <sys/time.h>
 
-#define MAX_NODES 12  // Maximum number of nodes
+#define MAX_NODES 17  // Maximum number of nodes
 #define BLOCK_SIZE 256
 
 __device__ int d_factorial(int n) {
