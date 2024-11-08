@@ -27,6 +27,41 @@ void generateGraph(int n) {
     }
 }
 
+void saveGraphToFile(int n) {
+    char filename[50];
+    snprintf(filename, sizeof(filename), "graph_data_%d.txt", n);
+    FILE *fptr = fopen(filename, "w");
+    if (fptr == NULL) {
+        printf("Error opening file for graph data!");
+        exit(1);
+    }
+    fprintf(fptr, "%d\n", n); // Write the number of nodes first
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            fprintf(fptr, "%d ", dist[i][j]);
+        }
+        fprintf(fptr, "\n");
+    }
+    fclose(fptr);
+}
+
+void loadGraphFromFile(int *n) {
+    char filename[50];
+    snprintf(filename, sizeof(filename), "graph_data_%d.txt", *n);
+    FILE *fptr = fopen(filename, "r");
+    if (fptr == NULL) {
+        printf("Error opening file for graph data!");
+        exit(1);
+    }
+    fscanf(fptr, "%d", n); // Read the number of nodes
+    for (int i = 1; i <= *n; i++) {
+        for (int j = 1; j <= *n; j++) {
+            fscanf(fptr, "%d", &dist[i][j]);
+        }
+    }
+    fclose(fptr);
+}
+
 // Check if the file exists
 int file_exists(const char* filename)
 {
@@ -92,16 +127,7 @@ int fun(int i, int mask, int n, int **memo, const char* schedule_type)
                 res = min(res, result + dist[j][i]);
             }
         }
-    } else if (strcmp(schedule_type, "runtime") == 0) {
-        #pragma omp parallel for reduction(min:res) schedule(runtime)
-        for (int j = 1; j <= n; j++) {
-            if ((mask & (1 << j)) && j != i && j != 1) {
-                int newMask = mask & (~(1 << i));
-                int result = fun(j, newMask, n, memo, schedule_type);
-                res = min(res, result + dist[j][i]);
-            }
-        }
-    }
+    } 
     
     #pragma omp critical
     {
