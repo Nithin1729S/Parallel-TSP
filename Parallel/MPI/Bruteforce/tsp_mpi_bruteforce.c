@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     srand(time(NULL) + rank);
 
     if (rank == 0) {
-        FILE *fptr = fopen("tsp_bruteforce_execution_times.csv", "w");
+        FILE *fptr = fopen("mpi_bruteforce_execution_times.csv", "w");
         fprintf(fptr, "Nodes,Execution_Time\n");
         fclose(fptr);
     }
