@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
 
     // Master process sets up CSV file
     if (rank == 0) {
-        FILE *fptr = fopen("tsp_dp_execution_times.csv", "w");
+        FILE *fptr = fopen("mpi_dp_execution_times.csv", "w");
         fprintf(fptr, "Nodes,Execution_Time\n");
         fclose(fptr);
     }
