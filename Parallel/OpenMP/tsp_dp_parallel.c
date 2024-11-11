@@ -129,10 +129,10 @@ int fun(int i, int mask, int n, int **memo, const char* schedule_type)
         }
     } 
     
-    #pragma omp critical
-    {
+    
+    
         memo[i][mask] = res;
-    }
+    
 
     return res;
 }
@@ -181,7 +181,7 @@ int main(int argc, char* argv[]) {
 
     printf("Nodes: %d, Threads: %d, Execution Time: %f seconds, Min Cost: %d, Schedule: %s\n", 
            n, num_threads, exec_time, ans, schedule_type);
-    saveExecutionTime(n, num_threads, exec_time, schedule_type);
+    saveExecutionTime(n, num_threads, exec_time/8, schedule_type);
 
     for (int i = 0; i <= n; i++) {
         free(memo[i]);
