@@ -131,7 +131,10 @@ int fun(int i, int mask, int n, int **memo, const char* schedule_type)
     
     
     
+    #pragma omp critical
+    {
         memo[i][mask] = res;
+    }
     
 
     return res;
